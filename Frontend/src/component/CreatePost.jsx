@@ -10,7 +10,7 @@ const CreatePost = () => {
     article: "",
     author: "",
     tags: [],
-    category: "", // Changed to a string
+    category: "", // Category is a single string
     publishedDate: "",
   });
   const [errors, setErrors] = useState({}); // To store validation errors
@@ -168,6 +168,7 @@ const CreatePost = () => {
             className={`w-full p-3 border ${
               errors.category ? "border-red-500" : "border-gray-300"
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            required // HTML5 validation
           >
             <option value="">Select a category</option>
             {categories.map((category) => (
@@ -218,8 +219,6 @@ const CreatePost = () => {
           </button>
         </div>
       </form>
-
-      {/* Go to Blog List Button */}
     </motion.div>
   );
 };
