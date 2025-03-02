@@ -23,10 +23,10 @@ const CreatePost = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPost({ ...post, [name]: value });
-    // Clear errors when user starts typing
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
     }
+    
   };
 
   // Validate form fields
@@ -35,6 +35,7 @@ const CreatePost = () => {
     if (!post.title.trim()) newErrors.title = "Title is required";
     if (!post.article.trim()) newErrors.article = "Article is required";
     if (!post.author.trim()) newErrors.author = "Author is required";
+    if (post.tags.length === 0) newErrors.tags = "Tags are required"; // Fix for tags validation
     if (!post.publishedDate)
       newErrors.publishedDate = "Published date is required";
     if (!post.category) newErrors.category = "Category is required"; // Validate category
@@ -53,6 +54,7 @@ const CreatePost = () => {
         `${import.meta.env.VITE_API_BASE_URL}/post/create`,
         post
       );
+      console.log("resss", response);
       navigate(`/`); // Redirect to the home page after creation
     } catch (error) {
       console.error("Error creating post:", error);
@@ -148,12 +150,23 @@ const CreatePost = () => {
             type="text"
             name="tags"
             value={post.tags.join(", ")}
-            onChange={(e) =>
-              setPost({ ...post, tags: e.target.value.split(", ") })
-            }
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onChange={(e) => {
+              const value = e.target.value;
+              setPost({ ...post, tags: value ? value.split(", ") : [] });
+
+              // Clear error when user starts typing again
+              if (errors.tags) {
+                setErrors({ ...errors, tags: "" });
+              }
+            }}
+            className={`w-full p-3 border ${
+              errors.tags ? "border-red-500" : "border-gray-300"
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
             placeholder="Enter tags separated by commas (e.g., tech, lifestyle)"
           />
+          {errors.tags && (
+            <p className="text-red-500 text-sm mt-1">{errors.tags}</p>
+          )}
         </div>
 
         {/* Category Field (Dropdown) */}

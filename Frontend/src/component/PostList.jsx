@@ -12,6 +12,7 @@ const PostList = () => {
   const [postToDelete, setPostToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(6); // Number of posts per page
+  const [loading, setLoading] = useState(true); // New state for loading
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,10 +20,16 @@ const PostList = () => {
   }, []);
 
   const fetchPosts = async () => {
-    const response = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL}/post/getAllPosts`
-    );
-    setPosts(response.data);
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/post/getAllPosts`
+      );
+      setPosts(response.data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching
+    }
   };
 
   // Filter and sort posts
@@ -94,8 +101,6 @@ const PostList = () => {
           <option value="Education">Education</option>
           <option value="Entertainment">Entertainment</option>
           <option value="Science">Science</option>
-
-          {/* Add more categories */}
         </select>
         <select
           value={sortBy}
@@ -106,64 +111,92 @@ const PostList = () => {
           <option value="title">Sort by Title</option>
         </select>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentPosts.map((post) => (
-          <motion.div
-            key={post._id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="border p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white"
-          >
-            <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
-            <p className="text-gray-600 mb-4">By {post.author}</p>
-            <div className="flex justify-between items-center">
-              <Link
-                to={`/posts/${post._id}`}
-                className="text-blue-500 hover:underline"
-              >
-                Read More
-              </Link>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => navigate(`/edit/${post._id}`)}
-                  className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition duration-300"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteClick(post._id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition duration-300"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
 
-      {/* Pagination */}
-      <div className="flex justify-center mt-8">
-        <nav className="flex gap-2">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <motion.button
-              key={index + 1}
+      {/* Loading and No Posts Messages */}
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-2xl font-bold text-gray-600"
+          >
+            Fetching posts...
+          </motion.div>
+        </div>
+      ) : filteredPosts.length === 0 ? (
+        <div className="flex justify-center items-center h-64">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-2xl font-bold text-gray-600"
+          >
+            No posts yet.
+          </motion.div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {currentPosts.map((post) => (
+            <motion.div
+              key={post._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              onClick={() => paginate(index + 1)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === index + 1
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 hover:bg-gray-300"
-              } transition duration-300`}
+              transition={{ duration: 0.5 }}
+              className="border p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white"
             >
-              {index + 1}
-            </motion.button>
+              <h2 className="text-2xl font-bold mb-2">{post.title}</h2>
+              <p className="text-gray-600 mb-4">By {post.author}</p>
+              <div className="flex justify-between items-center">
+                <Link
+                  to={`/posts/${post._id}`}
+                  className="text-blue-500 hover:underline"
+                >
+                  Read More
+                </Link>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => navigate(`/edit/${post._id}`)}
+                    className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition duration-300"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteClick(post._id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition duration-300"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </motion.div>
           ))}
-        </nav>
-      </div>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {!loading && filteredPosts.length > 0 && (
+        <div className="flex justify-center mt-8">
+          <nav className="flex gap-2">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <motion.button
+                key={index + 1}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                onClick={() => paginate(index + 1)}
+                className={`px-4 py-2 rounded-lg ${
+                  currentPage === index + 1
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-200 hover:bg-gray-300"
+                } transition duration-300`}
+              >
+                {index + 1}
+              </motion.button>
+            ))}
+          </nav>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
