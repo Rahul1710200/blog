@@ -10,16 +10,14 @@ const CreatePost = () => {
     article: "",
     author: "",
     tags: [],
-    category: "", // Category is a single string
+    category: "", 
     publishedDate: "",
   });
-  const [errors, setErrors] = useState({}); // To store validation errors
-  const [isLoading, setIsLoading] = useState(false); // For loading state
+  const [errors, setErrors] = useState({}); 
+  const [isLoading, setIsLoading] = useState(false); 
 
-  // Hardcoded categories
-  const categories = ["Tech", "Lifestyle", "Health", "Travel", "Food"];
+  const categories = ["Tech", "Lifestyle", "Health", "Business","Education","Entertanment","Science"];
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPost({ ...post, [name]: value });
@@ -29,37 +27,36 @@ const CreatePost = () => {
     
   };
 
-  // Validate form fields
   const validateForm = () => {
     const newErrors = {};
     if (!post.title.trim()) newErrors.title = "Title is required";
     if (!post.article.trim()) newErrors.article = "Article is required";
     if (!post.author.trim()) newErrors.author = "Author is required";
-    if (post.tags.length === 0) newErrors.tags = "Tags are required"; // Fix for tags validation
+    if (post.tags.length === 0) newErrors.tags = "Tags are required"; 
     if (!post.publishedDate)
       newErrors.publishedDate = "Published date is required";
-    if (!post.category) newErrors.category = "Category is required"; // Validate category
+    if (!post.category) newErrors.category = "Category is required"; 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Return true if no errors
+    return Object.keys(newErrors).length === 0; 
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return; // Stop if validation fails
+    if (!validateForm()) return; 
 
-    setIsLoading(true); // Start loading
+    setIsLoading(true); 
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/post/create`,
         post
       );
       console.log("resss", response);
-      navigate(`/`); // Redirect to the home page after creation
+      navigate(`/`); 
     } catch (error) {
       console.error("Error creating post:", error);
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false); 
     }
   };
 
@@ -72,7 +69,7 @@ const CreatePost = () => {
     >
       <div className="flex justify-end w-full">
         <button
-          onClick={() => navigate("/")} // Navigate to the blog list page
+          onClick={() => navigate("/")} 
           className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition duration-300"
         >
           Go to Blog List
@@ -81,7 +78,6 @@ const CreatePost = () => {
 
       <h1 className="text-3xl font-bold mb-6 text-center">Create a New Post</h1>
       <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
-        {/* Title Field */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Title
@@ -101,7 +97,6 @@ const CreatePost = () => {
           )}
         </div>
 
-        {/* Article Field */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Article
@@ -121,7 +116,6 @@ const CreatePost = () => {
           )}
         </div>
 
-        {/* Author Field */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Author
@@ -141,7 +135,6 @@ const CreatePost = () => {
           )}
         </div>
 
-        {/* Tags Field */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Tags
@@ -154,7 +147,6 @@ const CreatePost = () => {
               const value = e.target.value;
               setPost({ ...post, tags: value ? value.split(", ") : [] });
 
-              // Clear error when user starts typing again
               if (errors.tags) {
                 setErrors({ ...errors, tags: "" });
               }
@@ -169,7 +161,6 @@ const CreatePost = () => {
           )}
         </div>
 
-        {/* Category Field (Dropdown) */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Category
@@ -181,7 +172,7 @@ const CreatePost = () => {
             className={`w-full p-3 border ${
               errors.category ? "border-red-500" : "border-gray-300"
             } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            required // HTML5 validation
+            required 
           >
             <option value="">Select a category</option>
             {categories.map((category) => (
@@ -195,7 +186,6 @@ const CreatePost = () => {
           )}
         </div>
 
-        {/* Published Date Field */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Published Date
@@ -214,7 +204,6 @@ const CreatePost = () => {
           )}
         </div>
 
-        {/* Submit Button */}
         <div className="text-center">
           <button
             type="submit"

@@ -11,9 +11,9 @@ const PostList = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(6); // Number of posts per page
-  const [loading, setLoading] = useState(true); // Loading state for fetching posts
-  const [deleting, setDeleting] = useState(false); // Loading state for deletion
+  const [postsPerPage] = useState(6); 
+  const [loading, setLoading] = useState(true); 
+  const [deleting, setDeleting] = useState(false); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,11 +29,10 @@ const PostList = () => {
     } catch (error) {
       console.error("Error fetching posts:", error);
     } finally {
-      setLoading(false); // Set loading to false after fetching
+      setLoading(false); 
     }
   };
 
-  // Filter and sort posts
   const filteredPosts = posts
     .filter((post) =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -47,7 +46,6 @@ const PostList = () => {
         : a.title.localeCompare(b.title)
     );
 
-  // Pagination logic
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
@@ -59,17 +57,17 @@ const PostList = () => {
   };
 
   const handleDeleteConfirm = async () => {
-    setDeleting(true); // Start deletion loading state
+    setDeleting(true);
     try {
       await axios.delete(
         `${import.meta.env.VITE_API_BASE_URL}/post/delete/${postToDelete}`
       );
       setShowDeleteModal(false);
-      await fetchPosts(); // Refresh the list after deletion
+      await fetchPosts(); 
     } catch (error) {
       console.error("Error deleting post:", error);
     } finally {
-      setDeleting(false); // Stop deletion loading state
+      setDeleting(false); 
     }
   };
 
@@ -78,7 +76,6 @@ const PostList = () => {
     setPostToDelete(null);
   };
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -116,7 +113,6 @@ const PostList = () => {
         </select>
       </div>
 
-      {/* Loading and No Posts Messages */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <motion.div
@@ -178,7 +174,6 @@ const PostList = () => {
         </div>
       )}
 
-      {/* Pagination */}
       {!loading && filteredPosts.length > 0 && (
         <div className="flex justify-center mt-8">
           <nav className="flex gap-2">
@@ -202,7 +197,6 @@ const PostList = () => {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {showDeleteModal && (
           <motion.div
@@ -224,14 +218,14 @@ const PostList = () => {
               <div className="flex justify-end gap-4">
                 <button
                   onClick={handleDeleteCancel}
-                  disabled={deleting} // Disable cancel button while deleting
+                  disabled={deleting} 
                   className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-300"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteConfirm}
-                  disabled={deleting} // Disable delete button while deleting
+                  disabled={deleting} 
                   className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
                 >
                   {deleting ? (

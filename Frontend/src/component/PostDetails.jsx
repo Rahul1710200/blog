@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const PostDetails = () => {
-  const { id } = useParams(); // Get the post ID from the URL
+  const { id } = useParams(); 
   const navigate = useNavigate(); // For navigation
   const [post, setPost] = useState(null);
 
@@ -41,9 +41,8 @@ const PostDetails = () => {
       className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-        {/* Go to Blog List Button */}
         <button
-          onClick={() => navigate("/")} // Navigate to the blog list page
+          onClick={() => navigate("/")} 
           className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-300 mb-8"
         >
           Go to Blog List
