@@ -16,7 +16,7 @@ Backend Setup
 
 git clone https://github.com/your-username/Sportsdunia.git
 
-cd Sportsdunia/Backend
+cd Backend
 
 
 2: Install dependencies:
@@ -39,7 +39,7 @@ Frontend Setup
 
 1: Navigate to the Frontend folder:
 
-cd ../Frontend
+cd Frontend
 
 2 :Install dependencies
 
