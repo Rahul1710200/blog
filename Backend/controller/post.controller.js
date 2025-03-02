@@ -44,7 +44,7 @@ export const updatePost = async (req, res) => {
     const { title, article, author, tags, category, publishedDate } = req.body;
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.id,
-      { title, article, author, tags, category, publishedDate }, // Include publishedDate
+      { title, article, author, tags, category, publishedDate }, 
       { new: true }
     );
     if (!updatedPost) {

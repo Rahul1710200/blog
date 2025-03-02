@@ -5,10 +5,9 @@ import { motion } from "framer-motion";
 
 const PostDetails = () => {
   const { id } = useParams(); 
-  const navigate = useNavigate(); // For navigation
+  const navigate = useNavigate(); 
   const [post, setPost] = useState(null);
 
-  // Fetch the post data when the component mounts
   useEffect(() => {
     fetchPost();
   }, []);
@@ -24,7 +23,6 @@ const PostDetails = () => {
     }
   };
 
-  // Show a loading state while the post is being fetched
   if (!post) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -48,7 +46,6 @@ const PostDetails = () => {
           Go to Blog List
         </button>
 
-        {/* Post Title */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -58,7 +55,6 @@ const PostDetails = () => {
           {post.title}
         </motion.h1>
 
-        {/* Author */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -68,7 +64,6 @@ const PostDetails = () => {
           By {post.author}
         </motion.p>
 
-        {/* Article Content */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -78,7 +73,6 @@ const PostDetails = () => {
           {post.article}
         </motion.div>
 
-        {/* Tags */}
         {post.tags && post.tags.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -100,7 +94,6 @@ const PostDetails = () => {
           </motion.div>
         )}
 
-        {/* Category */}
         {post.category && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -113,7 +106,6 @@ const PostDetails = () => {
           </motion.div>
         )}
 
-        {/* Published Date */}
         {post.publishedDate && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
