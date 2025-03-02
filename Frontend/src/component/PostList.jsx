@@ -12,7 +12,8 @@ const PostList = () => {
   const [postToDelete, setPostToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(6); // Number of posts per page
-  const [loading, setLoading] = useState(true); // New state for loading
+  const [loading, setLoading] = useState(true); // Loading state for fetching posts
+  const [deleting, setDeleting] = useState(false); // Loading state for deletion
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,14 +59,17 @@ const PostList = () => {
   };
 
   const handleDeleteConfirm = async () => {
+    setDeleting(true); // Start deletion loading state
     try {
       await axios.delete(
         `${import.meta.env.VITE_API_BASE_URL}/post/delete/${postToDelete}`
       );
       setShowDeleteModal(false);
-      fetchPosts(); // Refresh the list after deletion
+      await fetchPosts(); // Refresh the list after deletion
     } catch (error) {
       console.error("Error deleting post:", error);
+    } finally {
+      setDeleting(false); // Stop deletion loading state
     }
   };
 
@@ -220,15 +224,24 @@ const PostList = () => {
               <div className="flex justify-end gap-4">
                 <button
                   onClick={handleDeleteCancel}
+                  disabled={deleting} // Disable cancel button while deleting
                   className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-300"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDeleteConfirm}
+                  disabled={deleting} // Disable delete button while deleting
                   className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300"
                 >
-                  Delete
+                  {deleting ? (
+                    <div className="flex items-center justify-center">
+                      <div className="w-5 h-5 border-2 border-white border-t-2 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="ml-2">Deleting...</span>
+                    </div>
+                  ) : (
+                    "Delete"
+                  )}
                 </button>
               </div>
             </motion.div>
